@@ -3,16 +3,17 @@
 const routes = {
   '/': './apps/home.html',
   '/checklist': './apps/checklist.html',
-  '/utilities/generators': './apps/generators.html',
+  '/generators': './apps/generators.html',
   '/utilities/slug-normalizer': './apps/slug-normalizer.html',
-  '/utilities/quick-links': './apps/quick-links.html'
+  '/utilities/quick-links': './apps/quick-links.html',
+  '/test': "./apps/test.html"
 }
 
 // Function to load content based on the current URL
 async function loadContent() {
   const currentPath = window.location.pathname;
   const loadPage = routes[currentPath] || routes['/'];
-  const contentContainer = document.getElementById('content');
+  const contentContainer = document.getElementById('app-content');
   
   try {
     const response = await fetch(loadPage);

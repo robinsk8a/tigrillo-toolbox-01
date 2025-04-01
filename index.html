@@ -1,21 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tigrillo Tool-Box</title>
-  <link rel="stylesheet" href="./src/css/styles.css">
-</head>
-<body>
-  <div id="trigrillo-app" class="app">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tigrillo Tool-Box</title>
+    <link rel="stylesheet" href="./src/css/styles.css" />
+
+  </head>
+  <body>
     <!-- Sidebar -->
-     <nav class="sidebar" id="sidebar">
+    <nav class="sidebar" id="sidebar">
       <ul>
         <li>
-          <a href=""></a>
+          <a href="javascript:void(o)" onclick="navigateTo('/')">Home</a></a>
+        </li>
+        <li>
+          <a href="javascript:void(o)" onclick="navigateTo('/checklist')">Checklist</a></a>
+        </li>
+        <li>
+          <a href="javascript:void(o)" onclick="navigateTo('/test')">Test</a></a>
+        </li>
+        <li>
+          <a href="javascript:void(0);" class="expandable">Utilities</a>
+          <ul class="sublist">
+            <li>
+              <a
+                href="javascript:void(0);"
+                onclick="navigateTo('/utilities/slug-normalizer')"
+                >Slug Normalizer</a
+              >
+            </li>
+            <li>
+              <a
+                href="javascript:void(0);"
+                onclick="navigateTo('/utilities/quick-links')"
+                >Quick Links</a
+              >
+            </li>
+            <li>
+              <a
+                href="javascript:void(0);"
+                onclick="navigateTo('/generators')"
+                >Generators</a
+              >
+            </li>
+          </ul>
         </li>
       </ul>
-     </nav>
-  </div>
-</body>
+    </nav>
+    <main id="app-content">
+
+    </main>
+    <script src="./src/js/router.js"></script>
+  </body>
 </html>
