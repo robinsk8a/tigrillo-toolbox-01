@@ -1,0 +1,46 @@
+/* Default theme */
+:root {
+  /* 🎨 Colores */
+  --primary: #0e8ef7;
+  --secondary: #df541f;
+  --primary-light: #66b9fd;
+  --secondary-light: #fca04f;
+  --primary-dark: #0866b3;
+  --background: #02121f;
+  --text: #212529;
+
+  /* 📏 Espaciado */
+  --radius: 8px;
+  --spacing: 16px;
+
+  /* 🔤 Tipografía */
+  --font-primary: "Inter", sans-serif;
+  --font-size: 16px;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+  font-family: var(--font-primary);
+  font-size: var(--font-size);
+  margin: 0;
+  padding: var(--spacing);
+}
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+      --background: #1e1e1e;
+      --text: #f8f9fa;
+  }
+}
+
+/* Default theme */
+/* Dark mode theme */
+
+.dark-mode {
+  --background: #1e1e1e;
+  --text: #f8f9fa;
+}
+
+/* Dark mode theme */

@@ -4,53 +4,82 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tigrillo Tool-Box</title>
-    <link rel="stylesheet" href="./src/css/styles.css" />
-
+    <link
+      rel="icon"
+      href="./public/tigrillo-favicon-rounded.png"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./src/css/main.css" />
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
   </head>
-  <body>
+  <body class="body">
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
+      <div class="logo-header">
+        <img src="./public/tigrillo-logo.png" alt="logo" />
+        <h4>Tool Box</h4>
+      </div>
+      <span></span>
       <ul>
         <li>
-          <a href="javascript:void(o)" onclick="navigateTo('/')">Home</a></a>
+          <a href="javascript:void(o)" onclick="navigateTo('/')">
+            <span class="icon"><i class="fa-solid fa-house"></i></span>
+            <span>Home</span>
+          </a>
         </li>
         <li>
-          <a href="javascript:void(o)" onclick="navigateTo('/checklist')">Checklist</a></a>
+          <a href="javascript:void(o)" onclick="navigateTo('/checklist')">
+            <span class="icon"><i class="fa-solid fa-list-check"></i></span>
+            <span>Checklist</span>
+          </a>
         </li>
         <li>
-          <a href="javascript:void(o)" onclick="navigateTo('/test')">Test</a></a>
-        </li>
-        <li>
-          <a href="javascript:void(0);" class="expandable">Utilities</a>
-          <ul class="sublist">
+          <button href="javascript:void(0);" class="expandable">
+            <div class="expandable-header-wrapper">
+              <span class="icon"><i class="fa-solid fa-hammer"></i></span>
+              <span>Utilities</span>
+            </div>
+            <span><i class="fa-solid fa-angle-down"></i></span>
+          </button>
+          <ul class="submenu">
             <li>
               <a
                 href="javascript:void(0);"
-                onclick="navigateTo('/utilities/slug-normalizer')"
-                >Slug Normalizer</a
+                onclick="navigateTo('/slug-normalizer')"
               >
+                <span class="icon"><i class="fa-solid fa-link"></i></span>
+                <span>Slug Normalizer</span>
+              </a>
             </li>
             <li>
               <a
                 href="javascript:void(0);"
-                onclick="navigateTo('/utilities/quick-links')"
-                >Quick Links</a
+                onclick="navigateTo('/quick-links')"
               >
+                <span class="icon"><i class="fa-solid fa-link"></i></span>
+                <span>Quick Links</span>
+              </a>
             </li>
             <li>
-              <a
-                href="javascript:void(0);"
-                onclick="navigateTo('/generators')"
-                >Generators</a
-              >
+              <a href="javascript:void(0);" onclick="navigateTo('/generators')">
+                <span class="icon"><i class="fa-solid fa-code"></i></span>
+                <span>Generators</span>
+              </a>
             </li>
           </ul>
         </li>
       </ul>
     </nav>
-    <main id="app-content">
-
-    </main>
+    <section class="main-content">
+      <div id="section-title" class="section-title">
+        <h1>Home</h1>
+      </div>
+      <main id="app-content"></main>
+    </section>
     <script src="./src/js/router.js"></script>
   </body>
 </html>
