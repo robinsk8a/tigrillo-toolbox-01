@@ -15,61 +15,60 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <script src="./src/js/main.js" defer></script>
   </head>
   <body class="body">
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
       <div class="logo-header">
-        <img src="./public/tigrillo-logo.png" alt="logo" />
-        <h4>Tool Box</h4>
+        <a class="logo-link" href="/">
+          <img src="./public/tigrillo-logo.png" alt="logo" />
+          <h4>Tool Box</h4>
+        </a>
       </div>
       <span></span>
       <ul>
         <li>
-          <a href="javascript:void(o)" onclick="navigateTo('/')">
-            <span class="icon"><i class="fa-solid fa-house"></i></span>
-            <span>Home</span>
-          </a>
-        </li>
-        <li>
-          <a href="javascript:void(o)" onclick="navigateTo('/checklist')">
+          <a class="sidebar-link" href="javascript:void(o)" onclick="navigateTo('/checklist')">
             <span class="icon"><i class="fa-solid fa-list-check"></i></span>
             <span>Checklist</span>
           </a>
         </li>
         <li>
-          <button href="javascript:void(0);" class="expandable">
+          <button onclick="toggleSubmenu(this)"  href="javascript:void(0);" class="expandable" id="submenu-button">
             <div class="expandable-header-wrapper">
               <span class="icon"><i class="fa-solid fa-hammer"></i></span>
               <span>Utilities</span>
             </div>
             <span><i class="fa-solid fa-angle-down"></i></span>
           </button>
-          <ul class="submenu">
-            <li>
-              <a
-                href="javascript:void(0);"
-                onclick="navigateTo('/slug-normalizer')"
-              >
-                <span class="icon"><i class="fa-solid fa-link"></i></span>
-                <span>Slug Normalizer</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="javascript:void(0);"
-                onclick="navigateTo('/quick-links')"
-              >
-                <span class="icon"><i class="fa-solid fa-link"></i></span>
-                <span>Quick Links</span>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0);" onclick="navigateTo('/generators')">
-                <span class="icon"><i class="fa-solid fa-code"></i></span>
-                <span>Generators</span>
-              </a>
-            </li>
+          <ul class="submenu submenu-opened">
+            <div>
+              <li>
+                <a
+                  href="javascript:void(0);"
+                  onclick="navigateTo('/slug-normalizer')"
+                >
+                  <span class="icon"><i class="fa-solid fa-link"></i></span>
+                  <span>Slug Normalizer</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0);"
+                  onclick="navigateTo('/quick-links')"
+                >
+                  <span class="icon"><i class="fa-solid fa-link"></i></span>
+                  <span>Quick Links</span>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0);" onclick="navigateTo('/generators')">
+                  <span class="icon"><i class="fa-solid fa-code"></i></span>
+                  <span>Generators</span>
+                </a>
+              </li>
+            </div>
           </ul>
         </li>
       </ul>

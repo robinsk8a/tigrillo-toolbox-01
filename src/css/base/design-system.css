@@ -6,7 +6,8 @@
   --primary-light: #66b9fd;
   --secondary-light: #fca04f;
   --primary-dark: #0866b3;
-  --background: #02121f;
+  --primary-dark-50: #0866b380;
+  --background: #d0e9fc;
   --text: #212529;
 
   /* 📏 Espaciado */
@@ -24,13 +25,12 @@ body {
   font-family: var(--font-primary);
   font-size: var(--font-size);
   margin: 0;
-  padding: var(--spacing);
 }
 
 
 @media (prefers-color-scheme: dark) {
   :root {
-      --background: #1e1e1e;
+      --background: #031e33;
       --text: #f8f9fa;
   }
 }
