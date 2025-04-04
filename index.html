@@ -71,6 +71,43 @@
             </div>
           </ul>
         </li>
+        <li>
+          <button onclick="toggleSubmenu(this)"  href="javascript:void(0);" class="expandable" id="submenu-button">
+            <div class="expandable-header-wrapper">
+              <span class="icon"><i class="fa-solid fa-hammer"></i></span>
+              <span>Utilities</span>
+            </div>
+            <span><i class="fa-solid fa-angle-down"></i></span>
+          </button>
+          <ul class="submenu submenu-opened">
+            <div>
+              <li>
+                <a
+                  href="javascript:void(0);"
+                  onclick="navigateTo('/slug-normalizer')"
+                >
+                  <span class="icon"><i class="fa-solid fa-link"></i></span>
+                  <span>Slug Normalizer</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0);"
+                  onclick="navigateTo('/quick-links')"
+                >
+                  <span class="icon"><i class="fa-solid fa-link"></i></span>
+                  <span>Quick Links</span>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0);" onclick="navigateTo('/generators')">
+                  <span class="icon"><i class="fa-solid fa-code"></i></span>
+                  <span>Generators</span>
+                </a>
+              </li>
+            </div>
+          </ul>
+        </li>
       </ul>
     </nav>
     <section class="main-content">

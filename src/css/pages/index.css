@@ -1,12 +1,20 @@
 /* Sidebar / Navigation */
 .body {
   --_header-height: 4rem;
+  --_flash-color-initial: #ffffff2c;
+  --_flash-color-final: #ffffffa4;
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: var(--_header-height) auto;
   height: 100vh;
   justify-content: space-between;
   background-color: var(--background);
+}
+
+@keyframes flash {
+  0% { background-color: var(--_flash-color-initial);}
+  50% {background-color: var(--_flash-color-final);}
+  100% { background-color: var(--_flash-color-initial);}
 }
 
 
@@ -49,7 +57,7 @@
 }
 
 
-.sidebar .sidebar-link, .sidebar .expandable, .sidebar .submenu a {
+.sidebar .sidebar-link, .sidebar .expandable{
   width: 98%;
   color: white;
   text-decoration: none;
@@ -97,6 +105,8 @@
 .sidebar .submenu  {
   display: grid;
   grid-template-rows: 0fr;
+  padding-inline: 0.5rem;
+  margin-top: 0.3rem;
   transition: all 0.3s ease-in-out;
   & > div {
     overflow-y: hidden;
@@ -107,32 +117,36 @@
   grid-template-rows: 1fr;
 }
 
-.sidebar .submenu a {
-  padding-left: 2rem;
-  background-color: #ffffff1e;
-  box-shadow: 0 0.1rem 0.1rem  rgba(0, 0, 0, 0.199);
-  margin-bottom: 0.2rem;
-}
 
-/* .sidebar .submenu a {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.1rem;
+.sidebar .submenu a {
+  margin-bottom: 0.2rem;
   width: 100%;
   padding: 0.5rem 0;
   border-radius: var(--radius);
   border: solid 0.1rem transparent;
-  padding-left: 1rem;
-  background-color: var(--primary-dark-50);
+  padding-left: 1.5rem;
+  background-color: #ffffff2c;
   font-size: 0.9em;
-  transition: all 0.3s ease-in-out;
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 0%;
+    z-index: -1;
+    border-radius: var(--radius);
+    background: var(--primary-dark);
+    box-shadow: -0.1rem 0.1rem 0.1rem rgba(0, 0, 0, 0.26);
+    filter: blur(0.02rem);
+    opacity: 0;
+    transition: all 0.3s ease-in-out, filter 0.7s ease-in; 
+  }
 }
 
 .sidebar .submenu a:hover {
-  background-color: var(--primary-dark);
   border: solid 0.1rem white;
-} */
+}
 
 /* 🔹 Mostrar submenú cuando esté activo */
 .sidebar .menu-item.active .submenu {
