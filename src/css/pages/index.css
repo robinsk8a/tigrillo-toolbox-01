@@ -35,9 +35,16 @@
   top: 0;
   align-self: start;
   transition: transform 0.3s ease-in-out, max-width 0.3s cubic-bezier(.61,.02,.34,1.01);
+  & > ul {
+    max-width: 100%;
+    transition: all 0.3s ease-in-out;
+  }
 }
 .sidebar.sidebar-collapsed {
   max-width: 4rem;
+  & > ul, & > li a {
+    max-width: 3.8rem;
+  }
 }
 
 .sidebar-toggle {
