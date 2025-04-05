@@ -22,7 +22,7 @@
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
       <div class="logo-header">
-        <a class="logo-link" href="/">
+        <a class="logo-link" href="">
           <img src="./public/tigrillo-logo.png" alt="logo" />
           <h4>Tool Box</h4>
         </a>
@@ -42,14 +42,16 @@
           <button
             onclick="toggleSubmenu(this)"
             href="javascript:void(0);"
-            class="expandable"
+            class="expandable-btn"
             id="submenu-button"
           >
             <div class="expandable-header-wrapper">
               <span class="icon"><i class="fa-solid fa-hammer"></i></span>
               <span>Utilities</span>
             </div>
-            <span><i class="fa-solid fa-angle-down"></i></span>
+            <span class="toggle-icon"
+              ><i class="fa-solid fa-angle-down"></i
+            ></span>
           </button>
           <ul class="submenu">
             <div>
@@ -87,7 +89,7 @@
           <button
             onclick="toggleSubmenu(this)"
             href="javascript:void(0);"
-            class="expandable"
+            class="expandable-btn"
             id="submenu-button"
           >
             <div class="expandable-header-wrapper">
@@ -131,7 +133,7 @@
       </ul>
     </nav>
     <section class="main-content">
-      <div class="sidebar-toggle" onclick="toggleSidebar(this)"><span></span></div>
+      <div class="sidebar-toggle" onclick="toggleSidebar()"><span></span></div>
       <div id="section-title" class="section-title">
         <h1>Home</h1>
       </div>

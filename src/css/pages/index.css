@@ -16,6 +16,11 @@
   50% {background-color: var(--_flash-color-final);}
   100% { background-color: var(--_flash-color-initial);}
 }
+@keyframes jumpingScale {
+  0% { scale: 100%;}
+  20% { scale: 120%;}
+  100% { scale: 100%;}
+}
 
 
 /* 🔹 Sidebar */
@@ -47,6 +52,8 @@
   }
 }
 
+
+/* 🔹 Sidebar Toggle */
 .sidebar-toggle {
   position: absolute;
   top: 1rem;
@@ -74,7 +81,6 @@
     transition: all 0.3s ease-in-out;
   }
 }
-
 .sidebar-toggle:hover {
   opacity: 1;
 } 
@@ -109,7 +115,7 @@
 }
 
 
-.sidebar .sidebar-link, .sidebar .expandable{
+.sidebar .sidebar-link, .sidebar .expandable-btn {
   width: 98%;
   color: white;
   text-decoration: none;
@@ -141,16 +147,27 @@
   filter: blur(0.04rem);
 }
 
-.sidebar .sidebar-link, .sidebar .expandable > div, .sidebar .submenu a {
+.sidebar .sidebar-link, .sidebar .expandable-btn  > div, .sidebar .submenu a {
   display: flex;
   align-items: flex-start;
   gap: 2rem;
 }
 
-.sidebar .expandable {
+.sidebar .expandable-btn  {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+/* 🔹 toggle rotary icon styles and animations */
+.expandable-btn  .toggle-icon {
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+}
+.rotate {
+  animation: jumpingScale 0.4s linear;
+  rotate: -180deg;
 }
 
 /* 🔹 Estilos para los submenús */
