@@ -114,6 +114,10 @@
   margin-top: 1rem;
 }
 
+.sidebar span {
+  text-wrap: nowrap;
+}
+
 
 .sidebar .sidebar-link, .sidebar .expandable-btn {
   width: 98%;
