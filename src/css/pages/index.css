@@ -34,18 +34,63 @@
   position: sticky;
   top: 0;
   align-self: start;
-  transition: transform 0.3s ease-in-out;
-
+  transition: transform 0.3s ease-in-out, max-width 0.3s cubic-bezier(.61,.02,.34,1.01);
 }
+.sidebar.sidebar-collapsed {
+  max-width: 4rem;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 1rem;
+  left: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  background-color: #00000049;
+  border: solid 0.1rem var(--primary-light);
+  padding: 0.1rem;
+  border-radius: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  opacity: 0.3;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  & span {
+    display: block;
+    height: 90%;
+    background-color: white;
+    width: 80%;
+    transform: translatex(calc(50% - 0.4rem));
+    box-shadow: -0.1rem 0.01rem 0.1rem rgba(0, 0, 0, 0.5);
+    border-radius: 0.2rem;
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+.sidebar-toggle:hover {
+  opacity: 1;
+} 
+.sidebar-toggle.sidebar-collapsed {
+  /* justify-content: flex-end; */
+  & span {
+    
+    width: 40%;
+    transform: translatex(0);
+    box-shadow: 0.05rem 0.01rem 0.1rem rgba(0, 0, 0, 0.5);
+  }
+}
+
+
 .sidebar > .logo-header > a {
-  grid-row: 1;
-  padding: 0.3rem;
-  box-shadow: 0 0.1rem 0.1rem  rgba(0, 0, 0, 0.199);
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 1rem;
+  grid-row: 1;
+  padding: 0.3rem;
+  box-shadow: 0 0.1rem 0.1rem  rgba(0, 0, 0, 0.199);
+  height: 100%;
   & > img{
     height: 100%;
     border-radius: 300rem;
@@ -92,7 +137,7 @@
 .sidebar .sidebar-link, .sidebar .expandable > div, .sidebar .submenu a {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .sidebar .expandable {
@@ -160,7 +205,7 @@
   grid-row: span 2;
   display: grid;
   grid-template-rows: subgrid;
-  
+  position: relative;
 }
 .main-content > .section-title {
   grid-row: 1;

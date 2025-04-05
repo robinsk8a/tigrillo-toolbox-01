@@ -1,25 +1,27 @@
 // Router
 
 const routes = {
-  '/': './apps/home.html',
-  '/checklist': './apps/checklist.html',
-  '/generators': './apps/generators.html',
-  '/slug-normalizer': './apps/slug-normalizer.html',
-  '/quick-links': './apps/quick-links.html',
-  '/test': "./apps/test.html"
+  '': './apps/home.html',
+  'checklist': './apps/checklist.html',
+  'generators': './apps/generators.html',
+  'slug-normalizer': './apps/slug-normalizer.html',
+  'quick-links': './apps/quick-links.html',
+  'test': "./apps/test.html"
 }
 
-// Function to load content based on the current URL
+function getCurrentRoute() {
+  return window.location.hash.replace(/^#\/?/, '');
+}
+
+
 async function loadContent() {
-  const currentPath = window.location.pathname;
-  const loadPage = routes[currentPath] || routes['/'];
+  const currentRoute = getCurrentRoute();
+  const loadPage = routes[currentRoute] || routes[''];
   const contentContainer = document.getElementById('app-content');
-  
+
   try {
     const response = await fetch(loadPage);
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Error: ${response.status}`);
     contentContainer.innerHTML = await response.text();
   } catch (error) {
     console.error('Error loading content:', error);
@@ -27,15 +29,10 @@ async function loadContent() {
   }
 }
 
-// Remember the url History and load content on back/forward navigation
-addEventListener('popstate', loadContent);
+window.addEventListener('hashchange', loadContent);
+window.addEventListener('DOMContentLoaded', loadContent);
 
-// Load content when the page is first loaded
-addEventListener('DOMContentLoaded', loadContent);
 
-// Function to navigate to a new path
-function navigateTo(path, state = null) {
-  // Load the new content
-  history.pushState(state, '', path);
-  loadContent();
+function navigateTo(path) {
+  window.location.hash = `#/${path}`;
 }

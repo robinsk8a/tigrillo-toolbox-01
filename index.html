@@ -15,7 +15,8 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <script src="./src/js/main.js" defer></script>
+    <script src="./src/js/index.js" defer></script>
+    <script src="./src/js/router.js"></script>
   </head>
   <body class="body">
     <!-- Sidebar -->
@@ -26,28 +27,36 @@
           <h4>Tool Box</h4>
         </a>
       </div>
-      <span></span>
       <ul>
         <li>
-          <a class="sidebar-link" href="javascript:void(o)" onclick="navigateTo('/checklist')">
+          <a
+            class="sidebar-link"
+            href="javascript:void(o)"
+            onclick="navigateTo('checklist')"
+          >
             <span class="icon"><i class="fa-solid fa-list-check"></i></span>
             <span>Checklist</span>
           </a>
         </li>
         <li>
-          <button onclick="toggleSubmenu(this)"  href="javascript:void(0);" class="expandable" id="submenu-button">
+          <button
+            onclick="toggleSubmenu(this)"
+            href="javascript:void(0);"
+            class="expandable"
+            id="submenu-button"
+          >
             <div class="expandable-header-wrapper">
               <span class="icon"><i class="fa-solid fa-hammer"></i></span>
               <span>Utilities</span>
             </div>
             <span><i class="fa-solid fa-angle-down"></i></span>
           </button>
-          <ul class="submenu submenu-opened">
+          <ul class="submenu">
             <div>
               <li>
                 <a
                   href="javascript:void(0);"
-                  onclick="navigateTo('/slug-normalizer')"
+                  onclick="navigateTo('slug-normalizer')"
                 >
                   <span class="icon"><i class="fa-solid fa-link"></i></span>
                   <span>Slug Normalizer</span>
@@ -56,14 +65,17 @@
               <li>
                 <a
                   href="javascript:void(0);"
-                  onclick="navigateTo('/quick-links')"
+                  onclick="navigateTo('quick-links')"
                 >
                   <span class="icon"><i class="fa-solid fa-link"></i></span>
                   <span>Quick Links</span>
                 </a>
               </li>
               <li>
-                <a href="javascript:void(0);" onclick="navigateTo('/generators')">
+                <a
+                  href="javascript:void(0);"
+                  onclick="navigateTo('generators')"
+                >
                   <span class="icon"><i class="fa-solid fa-code"></i></span>
                   <span>Generators</span>
                 </a>
@@ -72,14 +84,19 @@
           </ul>
         </li>
         <li>
-          <button onclick="toggleSubmenu(this)"  href="javascript:void(0);" class="expandable" id="submenu-button">
+          <button
+            onclick="toggleSubmenu(this)"
+            href="javascript:void(0);"
+            class="expandable"
+            id="submenu-button"
+          >
             <div class="expandable-header-wrapper">
               <span class="icon"><i class="fa-solid fa-hammer"></i></span>
               <span>Utilities</span>
             </div>
             <span><i class="fa-solid fa-angle-down"></i></span>
           </button>
-          <ul class="submenu submenu-opened">
+          <ul class="submenu">
             <div>
               <li>
                 <a
@@ -100,7 +117,10 @@
                 </a>
               </li>
               <li>
-                <a href="javascript:void(0);" onclick="navigateTo('/generators')">
+                <a
+                  href="javascript:void(0);"
+                  onclick="navigateTo('/generators')"
+                >
                   <span class="icon"><i class="fa-solid fa-code"></i></span>
                   <span>Generators</span>
                 </a>
@@ -111,11 +131,11 @@
       </ul>
     </nav>
     <section class="main-content">
+      <div class="sidebar-toggle" onclick="toggleSidebar(this)"><span></span></div>
       <div id="section-title" class="section-title">
         <h1>Home</h1>
       </div>
       <main id="app-content"></main>
     </section>
-    <script src="./src/js/router.js"></script>
   </body>
 </html>
