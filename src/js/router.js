@@ -1,38 +1,43 @@
 // Router
+export default class Router {
+  constructor(routes, appContainer = 'app-content', onLoadCallback = null) {
+    this.routes = routes;
+    this.appContainer =  document.getElementById(appContainer);
+    this.onLoadCallback = onLoadCallback;
 
-const routes = {
-  '': './apps/home.html',
-  'checklist': './apps/checklist.html',
-  'generators': './apps/generators.html',
-  'slug-normalizer': './apps/slug-normalizer.html',
-  'quick-links': './apps/quick-links.html',
-  'test': "./apps/test.html"
-}
-
-function getCurrentRoute() {
-  return window.location.hash.replace(/^#\/?/, '');
-}
-
-
-async function loadContent() {
-  const currentRoute = getCurrentRoute();
-  const loadPage = routes[currentRoute] || routes[''];
-  const contentContainer = document.getElementById('app-content');
-
-  try {
-    const response = await fetch(loadPage);
-    if (!response.ok) throw new Error(`Error: ${response.status}`);
-    contentContainer.innerHTML = await response.text();
-  } catch (error) {
-    console.error('Error loading content:', error);
-    contentContainer.innerHTML = `<p>Error loading content: ${error.message}</p>`;
+    // Bind the loadContent method to the current instance
+    window.addEventListener('hashchange', () => this.loadContent());
+    window.addEventListener('DOMContentLoaded', () => this.loadContent());
   }
-}
 
-window.addEventListener('hashchange', loadContent);
-window.addEventListener('DOMContentLoaded', loadContent);
+  // Get the current route from the URL hash
+  // This function removes the leading '#' and any trailing slashes
+  _getCurrentRoute() {
+    return window.location.hash.replace(/^#\/?/, '');
+  }
 
+  // Load content based on the current route
+  async loadContent() {
+    const currentRoute = this._getCurrentRoute();
+    const loadPage = this.routes[currentRoute] || this.routes[''];
+  
+    try {
+      const response = await fetch(loadPage);
+      if (!response.ok) throw new Error(`Error: ${response.status}`);
+      this.appContainer.innerHTML = await response.text();
 
-function navigateTo(path) {
-  window.location.hash = `#/${path}`;
+      // Set current JavaScript fucntionality
+      if (typeof this.onLoadCallback === 'function') {
+        this.onLoadCallback(currentRoute);
+      }
+    } catch (error) {
+      console.error('Error loading content:', error);
+      this.appContainer.innerHTML = `<p>Error loading content: ${error.message}</p>`;
+    }
+  
+  }
+
+  navigateTo(path) {
+    window.location.hash = `#/${path}`;
+  }
 }

@@ -1,6 +1,8 @@
 const sidebar = document.querySelector(".sidebar");
 const subMenus = document.querySelectorAll(".submenu");
 const toggleButton = document.querySelector(".sidebar-toggle");
+const sidebarLinks = document.querySelectorAll(".sidebar-link");
+
 
 function toggleSubmenu(element) {
   // Check if the clicked element is already open
@@ -38,4 +40,27 @@ function closeAllSubMenus() {
     subMenu.previousElementSibling.lastElementChild.classList.remove("rotate");
   });
 }
+
+function setActiveLink(element = null) {
+  sidebarLinks.forEach(link => {
+    link.classList.remove("active"); // Remove active class from all links
+  });
+  // If an element is passed, set it as the current link
+  if (element) {
+    element.classList.add("active");
+    return;
+  }
+  const currentUrl = window.location.pathname;
+  sidebarLinks.forEach(link => {
+    if (link.href === currentUrl) {
+      link.classList.add("active"); // Add active class to the current link
+    }
+  }
+  );
+}
+
+
+window.addEventListener("DOMContentLoaded", () => {
+  setActiveLink();
+});
 

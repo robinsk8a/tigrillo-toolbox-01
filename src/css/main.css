@@ -1,3 +1,4 @@
 @import url('./base/reset.css');
 @import url('./base/design-system.css');
 @import url('./pages/index.css');
+@import url('./pages/slug-normalizer.css');

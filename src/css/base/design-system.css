@@ -7,8 +7,8 @@
   --secondary-light: #fca04f;
   --primary-dark: #0866b3;
   --primary-dark-50: #0866b380;
-  --background: #d0e9fc;
-  --text: #212529;
+  --background: #031e33;
+  --text: #f8f9fa;
 
   /* 📏 Espaciado */
   --radius: 8px;
@@ -25,6 +25,20 @@ body {
   font-family: var(--font-primary);
   font-size: var(--font-size);
   margin: 0;
+}
+
+input:focus-visible, textarea:focus-visible {
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+  color: var(--text);
+  border-radius: var(--radius);
+  border: none;
+  font-size: inherit;
+  font-family: inherit;
+  transition: all 0.3s ease-in-out;
 }
 
 
@@ -44,3 +58,23 @@ body {
 }
 
 /* Dark mode theme */
+
+/* General classes */
+
+.input {
+  border-radius: var(--radius);
+  border: solid 0.1rem #ffffff2c;
+  padding: 0.5rem 1rem;
+  color: var(--text);
+  background-color: #ffffff2c;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  & > input {
+    color: var(--text);
+  }
+  & input::placeholder {
+    color: #b8b8b8
+  }
+}
