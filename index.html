@@ -16,13 +16,16 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <script src="./src/js/index.js" defer></script>
-    
   </head>
   <body class="body">
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
       <div class="logo-header">
-        <a class="logo-link" href="javascript:void(0)" onclick="appRouter.navigateTo('')">
+        <a
+          class="logo-link"
+          href="javascript:void(0)"
+          onclick="appRouter.navigateTo('')"
+        >
           <img src="./public/tigrillo-logo.png" alt="logo" />
           <h4>Tool Box</h4>
         </a>
@@ -38,6 +41,7 @@
             <span>Checklist</span>
           </a>
         </li>
+        <!-- Utilities -->
         <li>
           <button
             onclick="toggleSubmenu(this)"
@@ -87,6 +91,7 @@
             </div>
           </ul>
         </li>
+        <!-- Data Handlers -->
         <li>
           <button
             onclick="toggleSubmenu(this)"
@@ -96,7 +101,7 @@
           >
             <div class="expandable-header-wrapper">
               <span class="icon"><i class="fa-solid fa-hammer"></i></span>
-              <span>Utilities</span>
+              <span>Data Handlers</span>
             </div>
             <span><i class="fa-solid fa-angle-down"></i></span>
           </button>
@@ -105,28 +110,19 @@
               <li>
                 <a
                   href="javascript:void(0);"
-                  onclick="appRouter.navigateTo('/slug-normalizer')"
+                  onclick="appRouter.navigateTo('data-warranties')"
                 >
                   <span class="icon"><i class="fa-solid fa-link"></i></span>
-                  <span>Slug Normalizer</span>
+                  <span>Warranties</span>
                 </a>
               </li>
               <li>
                 <a
                   href="javascript:void(0);"
-                  onclick="appRouter.navigateTo('/quick-links')"
+                  onclick="appRouter.navigateTo('data-availability')"
                 >
                   <span class="icon"><i class="fa-solid fa-link"></i></span>
-                  <span>Quick Links</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="javascript:void(0);"
-                  onclick="appRouter.navigateTo('/generators')"
-                >
-                  <span class="icon"><i class="fa-solid fa-code"></i></span>
-                  <span>Generators</span>
+                  <span>Item Availability</span>
                 </a>
               </li>
             </div>
@@ -142,7 +138,6 @@
       <main id="app-content"></main>
     </section>
     <script type="module" src="./src/js/main.js"></script>
-    <!-- <script type="module" src="./src/js/notifications.js"></script> -->
 
   </body>
 </html>

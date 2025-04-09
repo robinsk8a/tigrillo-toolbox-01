@@ -12,7 +12,9 @@ const routes = {
   'generators': './apps/generators.html',
   'slug-normalizer': './apps/slug-normalizer.html',
   'quick-links': './apps/quick-links.html',
-  'test': "./apps/test.html"
+  'test': "./apps/test.html",
+  'data-warranties' : './apps/data-warranties.html',
+  'data-availability' : './apps/data-availability.html'
 };
 
 async function setActiveRoute(route) {
