@@ -145,7 +145,7 @@
     transition: all 0.3s ease-in-out, filter 0.7s ease-in; 
   }
 }
-.sidebar .sidebar-link:hover::before, .sidebar button:hover::before, .sidebar .submenu a:hover::before {
+.sidebar .sidebar-link:hover::before, .sidebar button:hover::before, .sidebar .submenu a:hover::before, .sidebar .sidebar-link.active::before, sidebar .submenu a::before {
   width: 100%;
   opacity: 0.9;
   filter: blur(0.04rem);
@@ -254,6 +254,3 @@
   width: 100%;
 }
 
-.active {
-  background-color: red;
-}

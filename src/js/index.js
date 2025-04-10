@@ -48,6 +48,7 @@ function setActiveLink(element = null) {
   // If an element is passed, set it as the current link
   if (element) {
     element.classList.add("active");
+     // Change background color of the active link
     return;
   }
   const currentUrl = window.location.pathname;
