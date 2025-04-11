@@ -4,6 +4,8 @@ export class CSVProcessor {
   constructor() {
     this.headers = [];
     this.rows = [];
+    this.separator = ",";
+    this.alterSeparator = "&";
   }
 
   getHeaders() {
@@ -14,9 +16,11 @@ export class CSVProcessor {
     return this.rows;
   }
 
-  escapeFormulaCommas(text, separator = "^*") {
+  innerFormulaTransform(text, currentSeparator = ",", newSeparator = "&") {
+
     return text.replace(/=\b([A-Z_]+)\(([^)]+)\)/g, (match, fn, args) => {
-      const escapedArgs = args.replace(/,/g, separator);
+      const transSeparator = new RegExp(`${currentSeparator}`, "g");
+      const escapedArgs = args.replace(transSeparator, newSeparator);
       return `=${fn}(${escapedArgs})`;
     });
   }
@@ -33,14 +37,14 @@ export class CSVProcessor {
   
     try {
       let text = await file.text();
-      console.log(text);
+
 
       // Replace commas in formulas with a temporary placeholder
-      text = this.escapeFormulaCommas(text);
-      console.log(text);
+      text = this.innerFormulaTransform(text, this.separator, this.alterSeparator);
+
 
       const lines = text.trim().split("\n");
-      console.log(lines);
+  
   
       this.headers = lines[0].split(delimiter).map(h => h.trim());
   
@@ -63,7 +67,7 @@ export class CSVProcessor {
   
   
 
-  renderTable(containerId) {
+  renderTable(containerId, alterSep = null) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
@@ -82,6 +86,15 @@ export class CSVProcessor {
 
     const tbody = document.createElement("tbody");
     this.rows.forEach(row => {
+
+      if (alterSep !== null) {
+          for (let [key, value] of Object.entries(row)) {
+          if (typeof value === "string" && value.includes("=")) {
+            // Transform only formula items
+            row[key] = this.innerFormulaTransform(value, this.alterSeparator, this.separator);
+          } 
+        }
+      }
       const tr = document.createElement("tr");
       this.headers.forEach(header => {
         const td = document.createElement("td");
