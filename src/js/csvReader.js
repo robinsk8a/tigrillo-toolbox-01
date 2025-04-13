@@ -2,14 +2,14 @@ import { showNotification } from "./notifications.js";
 
 export class CSVProcessor {
   constructor() {
-    this.headers = [];
+    this._headers = [];
     this.rows = [];
     this.separator = ",";
     this.alterSeparator = "&";
   }
 
-  getHeaders() {
-    return this.headers;
+  get headers() {
+    return this._headers;
   }
 
   getRows() {
@@ -46,19 +46,21 @@ export class CSVProcessor {
       const lines = text.trim().split("\n");
   
   
-      this.headers = lines[0].split(delimiter).map(h => h.trim());
+      this._headers = lines[0].split(delimiter).map(h => h.trim());
   
       this.rows = lines.slice(1).map(line => {
         const values = line.split(delimiter).map(v => v.trim());
         const rowObject = {};
-        this.headers.forEach((header, i) => {
+        this._headers.forEach((header, i) => {
           rowObject[header] = values[i] ?? null;
         });
         return rowObject;
       });
   
       showNotification("✅ CSV file imported and processed successfully!");
-      return { headers: this.headers, rows: this.rows };
+      console.log(this._headers);
+      console.log(this.rows);
+      return { headers: this._headers, rows: this.rows };
     } catch (error) {
       console.error("Error reading CSV file:", error);
       throw error;
@@ -76,7 +78,7 @@ export class CSVProcessor {
 
     const thead = document.createElement("thead");
     const headerRow = document.createElement("tr");
-    this.headers.forEach(header => {
+    this._headers.forEach(header => {
       const th = document.createElement("th");
       th.textContent = header;
       headerRow.appendChild(th);
@@ -96,7 +98,7 @@ export class CSVProcessor {
         }
       }
       const tr = document.createElement("tr");
-      this.headers.forEach(header => {
+      this._headers.forEach(header => {
         const td = document.createElement("td");
         td.textContent = row[header] ?? "";
         tr.appendChild(td);

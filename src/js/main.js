@@ -39,6 +39,7 @@ async function setActiveRoute(route) {
         try {
           await info.readCSV(file);
           info.renderTable(csvContainerId, "&");
+          console.log(info.headers);
         } catch (err) {
           console.error("Error processing CSV:", err.message);
         }
