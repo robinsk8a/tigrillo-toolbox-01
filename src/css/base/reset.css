@@ -43,6 +43,11 @@ li {
     margin: 0;
 }
 
+td {
+    max-width: 10rem;
+    border: 1px solid white;
+}
+
 /* 🔹 Botones y inputs con estilos base */
 button, input, textarea, select {
     font: inherit;

@@ -672,4 +672,73 @@ export class DataToDb {
 
     return { headers, rows };
   }
+
+  /**
+   * Gets warranty data grouped by categories and their ranges
+   * @returns {Object} Formatted warranty data grouped by categories
+   */
+  getGroupedWarrantyData() {
+    // Get all warranty columns
+    const warrantyColumns = Object.keys(this.tables.columnValues)
+      .filter(header => header.toUpperCase().includes('WARRANTY'))
+      .sort();
+
+    // Create a map for each warranty column
+    const columnGroups = {};
+
+    // Initialize groups for each warranty column
+    warrantyColumns.forEach(column => {
+      columnGroups[column] = {};
+    });
+
+    // Group categories by their warranty values for each column
+    Object.values(this.tables.relationships).forEach(relationship => {
+      const categoryId = relationship.labelId;
+      const category = this.tables.labels[categoryId].category;
+
+      warrantyColumns.forEach(column => {
+        const valueId = relationship[column];
+        const value = this.tables.columnValues[column][valueId]?.value || 'N/A';
+
+        // Create or update the group for this value
+        if (!columnGroups[column][value]) {
+          columnGroups[column][value] = {
+            categories: [],
+            range: null
+          };
+        }
+
+        // Add category to the group
+        columnGroups[column][value].categories.push(category);
+
+        // If this is a range value, find the corresponding range details
+        if (value.toLowerCase().includes('range')) {
+          const rangeGroup = this.tables.warrantyRanges.formatted.find(warranty => 
+            warranty.source['warranty-id'] === column && 
+            warranty.source['value-id'] === valueId
+          );
+
+          if (rangeGroup) {
+            columnGroups[column][value].range = {};
+            Object.entries(rangeGroup.ranges).forEach(([rangeKey, range]) => {
+              columnGroups[column][value].range[`range-${range.id}`] = {
+                range: [range.low, range.high],
+                price: range.price
+              };
+            });
+          }
+        }
+      });
+    });
+
+    // Sort categories within each group
+    Object.values(columnGroups).forEach(groups => {
+      Object.values(groups).forEach(group => {
+        group.categories.sort();
+      });
+    });
+
+    console.log('Warranty Groups by Column:', JSON.stringify(columnGroups, null, 2));
+    return columnGroups;
+  }
 }

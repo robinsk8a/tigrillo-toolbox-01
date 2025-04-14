@@ -85,7 +85,7 @@ async function setActiveRoute(route) {
       window.dataProcessor = dataProcessor;
 
       // Handle file upload
-      input.addEventListener("change", async () => {
+      input.addEventListener('change', async () => {
         const file = input.files[0];
         if (!file) return;
 
@@ -93,51 +93,149 @@ async function setActiveRoute(route) {
           // Process CSV for data structure
           console.log("Processing CSV for data structure...");
           const result = await dataProcessor.processCSVFile(file);
-          console.log("Processing complete!");
+          console.log("Processing complete!", result);
 
           // Extract warranty ranges
           dataProcessor.extractWarrantyRanges();
 
-          // Get table data
-          const tableData = dataProcessor.getTableData();
-          const warrantyRangesData = dataProcessor.getWarrantyRangesTableData();
-          const container = document.getElementById(csvContainerId);
+          // Get grouped warranty data
+          const groupedData = dataProcessor.getGroupedWarrantyData();
+          console.log("Grouped Warranty Data:", groupedData);
 
-          // Clear previous content
+          const container = document.getElementById(csvContainerId);
           container.innerHTML = "";
 
-          // Create container for all tables
-          const tablesContainer = document.createElement('div');
-          tablesContainer.classList.add('table-container');
+          // Create main container
+          const mainContainer = document.createElement('div');
+          mainContainer.classList.add('table-container');
 
-          // Add Relationships table
-          if (tableData.relationships) {
-            const relHeader = document.createElement('h2');
-            relHeader.textContent = 'Relationships Matrix';
-            relHeader.classList.add('relationship-header');
-            tablesContainer.appendChild(relHeader);
+          // Group warranties by their categories
+          const groupedWarranties = {};
+          Object.entries(groupedData).forEach(([warrantyColumn, values]) => {
+            Object.entries(values).forEach(([value, data]) => {
+              const categoriesKey = data.categories.sort().join(',');
+              if (!groupedWarranties[categoriesKey]) {
+                groupedWarranties[categoriesKey] = {
+                  categories: data.categories,
+                  warranties: {}
+                };
+              }
+              groupedWarranties[categoriesKey].warranties[warrantyColumn] = {
+                ranges: data.range || {}
+              };
+            });
+          });
 
-            const tableWrapper = createTable(tableData.relationships, 'relationship-table');
-            tableWrapper.style.maxHeight = '40vh';
-            tableWrapper.style.overflowY = 'auto';
-            tablesContainer.appendChild(tableWrapper);
-          }
+          // Create the main table
+          const mainTable = document.createElement('table');
+          mainTable.classList.add('data-table', 'warranty-main-table');
 
-          // Add Warranty Ranges table
-          if (warrantyRangesData.rows.length > 0) {
-            const warrantyHeader = document.createElement('h2');
-            warrantyHeader.textContent = 'Warranty Ranges';
-            warrantyHeader.classList.add('relationship-header');
-            warrantyHeader.style.marginTop = '2rem';
-            tablesContainer.appendChild(warrantyHeader);
+          // Add main table headers
+          const mainThead = document.createElement('thead');
+          const mainHeaderRow = document.createElement('tr');
+          ['Categories', 'Ranges'].forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            mainHeaderRow.appendChild(th);
+          });
+          mainThead.appendChild(mainHeaderRow);
+          mainTable.appendChild(mainThead);
 
-            const warrantyWrapper = createTable(warrantyRangesData, 'relationship-table');
-            warrantyWrapper.style.maxHeight = '40vh';
-            warrantyWrapper.style.overflowY = 'auto';
-            tablesContainer.appendChild(warrantyWrapper);
-          }
+          // Add main table body
+          const mainTbody = document.createElement('tbody');
 
-          container.appendChild(tablesContainer);
+          // Sort warranty columns in specific order
+          const warrantyOrder = ['WARRANTY1', 'WARRANTY2', 'WARRANTY3', 'WARRANTY4', 'WARRANTY5', 'WARRANTY10'];
+
+          Object.entries(groupedWarranties).forEach(([categoriesKey, data]) => {
+            const row = document.createElement('tr');
+            row.classList.add('warranty-group-row');
+
+            // Categories cell
+            const categoriesCell = document.createElement('td');
+            categoriesCell.classList.add('categories-cell');
+            categoriesCell.textContent = data.categories.join(', ');
+            row.appendChild(categoriesCell);
+
+            // Ranges cell with nested table
+            const rangesCell = document.createElement('td');
+            rangesCell.classList.add('ranges-cell');
+
+            // Create ranges table
+            const rangesTable = document.createElement('table');
+            rangesTable.classList.add('ranges-table');
+
+            // Add ranges table headers (warranty columns)
+            const rangesThead = document.createElement('thead');
+            const rangesHeaderRow = document.createElement('tr');
+            warrantyOrder.forEach(warrantyCol => {
+              const th = document.createElement('th');
+              th.textContent = warrantyCol;
+              th.classList.add('warranty-header');
+              rangesHeaderRow.appendChild(th);
+            });
+            rangesThead.appendChild(rangesHeaderRow);
+            rangesTable.appendChild(rangesThead);
+
+            // Add ranges table body
+            const rangesTbody = document.createElement('tbody');
+
+            // Get all unique range names
+            const allRanges = new Set();
+            Object.values(data.warranties).forEach(warranty => {
+              Object.keys(warranty.ranges).forEach(range => {
+                allRanges.add(range);
+              });
+            });
+
+            // Create rows for each range
+            Array.from(allRanges).sort().forEach(rangeName => {
+              // Range title row
+              const rangeTitleRow = document.createElement('tr');
+              rangeTitleRow.classList.add('range-title-row');
+              const rangeTitleCell = document.createElement('td');
+              rangeTitleCell.textContent = rangeName;
+              rangeTitleCell.colSpan = warrantyOrder.length;
+              rangeTitleCell.classList.add('range-title-cell');
+              rangeTitleRow.appendChild(rangeTitleCell);
+              rangesTbody.appendChild(rangeTitleRow);
+
+              // Range values row
+              const rangeValuesRow = document.createElement('tr');
+              rangeValuesRow.classList.add('range-values-row');
+
+              warrantyOrder.forEach(warrantyCol => {
+                const rangeCell = document.createElement('td');
+                rangeCell.classList.add('range-value-cell');
+
+                const warranty = data.warranties[warrantyCol];
+                if (warranty && warranty.ranges[rangeName]) {
+                  const range = warranty.ranges[rangeName];
+                  const rangeText = `$${range.range[0].toLocaleString()} - $${range.range[1].toLocaleString()}`;
+                  const priceText = `$${range.price.toLocaleString()}`;
+                  
+                  rangeCell.innerHTML = `
+                    <div class="range-amount">${rangeText}</div>
+                    <div class="range-price">${priceText}</div>
+                  `;
+                } else {
+                  rangeCell.textContent = 'N/A';
+                  rangeCell.classList.add('nan-value');
+                }
+                rangeValuesRow.appendChild(rangeCell);
+              });
+              rangesTbody.appendChild(rangeValuesRow);
+            });
+
+            rangesTable.appendChild(rangesTbody);
+            rangesCell.appendChild(rangesTable);
+            row.appendChild(rangesCell);
+            mainTbody.appendChild(row);
+          });
+
+          mainTable.appendChild(mainTbody);
+          mainContainer.appendChild(mainTable);
+          container.appendChild(mainContainer);
 
         } catch (err) {
           console.error("Error processing CSV:", err.message);
