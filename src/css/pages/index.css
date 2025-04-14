@@ -252,5 +252,6 @@
   flex: 1;
   padding: var(--spacing);
   width: 100%;
+  overflow: scroll;
 }
 
