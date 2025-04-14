@@ -24,17 +24,17 @@ export class CSVProcessor {
       return `=${fn}(${escapedArgs})`;
     });
   }
-  
+
 
   async readCSV(file, delimiter = ',') {
     if (!(file instanceof File)) {
       throw new Error("Input must be a File object.");
     }
-  
+
     if (!file.name.endsWith(".csv")) {
       throw new Error("Please upload a valid .csv file.");
     }
-  
+
     try {
       let text = await file.text();
 
@@ -44,10 +44,10 @@ export class CSVProcessor {
 
 
       const lines = text.trim().split("\n");
-  
-  
+
+
       this._headers = lines[0].split(delimiter).map(h => h.trim());
-  
+
       this.rows = lines.slice(1).map(line => {
         const values = line.split(delimiter).map(v => v.trim());
         const rowObject = {};
@@ -56,7 +56,7 @@ export class CSVProcessor {
         });
         return rowObject;
       });
-  
+
       showNotification("✅ CSV file imported and processed successfully!");
       console.log(this._headers);
       console.log(this.rows);
@@ -66,8 +66,8 @@ export class CSVProcessor {
       throw error;
     }
   }
-  
-  
+
+
 
   renderTable(containerId, alterSep = null) {
     const container = document.getElementById(containerId);
@@ -90,11 +90,11 @@ export class CSVProcessor {
     this.rows.forEach(row => {
 
       if (alterSep !== null) {
-          for (let [key, value] of Object.entries(row)) {
+        for (let [key, value] of Object.entries(row)) {
           if (typeof value === "string" && value.includes("=")) {
             // Transform only formula items
             row[key] = this.innerFormulaTransform(value, this.alterSeparator, this.separator);
-          } 
+          }
         }
       }
       const tr = document.createElement("tr");
@@ -109,5 +109,56 @@ export class CSVProcessor {
 
     container.innerHTML = "";
     container.appendChild(table);
+  }
+
+  /**
+   * Parses inner formula content and extracts numeric values
+   * @param {string} formula - The formula string to parse
+   * @param {string} [divider='&'] - The divider used to separate formula parts
+   * @returns {Array<{value: number, original: string}>} Array of parsed values with their original strings
+   */
+  parseInnerFormula(formula, divider = '&') {
+    // Remove function wrapper if exists
+    const cleanFormula = formula.replace(/^=\w+\((.*)\)$/, '$1').trim();
+
+    // Split by divider
+    const parts = cleanFormula.split(divider).map(part => part.trim());
+
+    // Process each part
+    return parts
+      .filter(part => part.length > 0)
+      .map(part => {
+        // Extract numbers, keeping $ prefix if exists
+        const matches = part.match(/\$?\d+(?:\.\d+)?/g);
+        if (!matches) return null;
+
+        const value = parseFloat(matches[0].replace('$', ''));
+        return {
+          value: value,
+          original: part
+        };
+      })
+      .filter(result => result !== null && !isNaN(result.value));
+  }
+
+  /**
+   * Parses a formula and groups values in sets of specified size
+   * @param {string} formula - The formula string to parse
+   * @param {number} groupSize - Size of each group
+   * @param {string} [divider='&'] - The divider used to separate formula parts
+   * @returns {Array<Array<{value: number, original: string}>>} Array of grouped values
+   */
+  parseFormulaInGroups(formula, groupSize, divider = '&') {
+    const values = this.parseInnerFormula(formula, divider);
+    const groups = [];
+
+    for (let i = 0; i < values.length; i += groupSize) {
+      const group = values.slice(i, i + groupSize);
+      if (group.length === groupSize) {
+        groups.push(group);
+      }
+    }
+
+    return groups;
   }
 }
