@@ -1,10 +1,528 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSV Relational Database Demo</title>
+    <script src="csv-relational-db.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .content {
+        margin-top: 20px;
+      }
+      #csv-container {
+        margin-top: 20px;
+        overflow-x: auto;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .query-results {
+        margin-top: 20px;
+      }
+      .tables-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 20px;
+      }
+      .table-wrapper {
+        flex: 1;
+        min-width: 300px;
+      }
+      .table-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      .filter-container {
+        margin: 20px 0;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+      }
+      .filter-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        align-items: center;
+      }
+      select {
+        padding: 8px;
+        flex: 1;
+      }
+      .data-info {
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+      }
+      .value-count {
+        font-size: 0.9em;
+        color: #666;
+      }
+      .range-info {
+        font-size: 0.8em;
+        color: #666;
+        margin-top: 5px;
+        padding: 5px;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        line-height: 1.4;
+      }
+      .formula-preview {
+        background-color: #f8f9fa;
+        padding: 8px;
+        border-radius: 4px;
+        margin-top: 5px;
+        font-family: monospace;
+        white-space: pre-wrap;
+        border: 1px solid #ddd;
+        color: #333;
+      }
+      .parentheses-info {
+        margin-top: 5px;
+      }
+      .parentheses-value {
+        padding: 4px 8px;
+        margin: 2px 0;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.9em;
+        border: 1px solid #ddd;
+      }
+      .ranges-container {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .ranges-header {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+        color: #333;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 10px;
+      }
+      .range-group {
+        margin-bottom: 30px;
+        background-color: white;
+        padding: 15px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      .range-group-title {
+        font-size: 1.2em;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .range-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .range-table th {
+        background-color: #f2f2f2;
+        padding: 12px;
+        text-align: left;
+        border-bottom: 2px solid #ddd;
+      }
+      .range-table td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+      }
+      .range-info {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+      .range-value {
+        font-weight: bold;
+        color: #2c3e50;
+      }
+      .range-price {
+        color: #27ae60;
+        font-weight: bold;
+      }
+    </style>
+  </head>
   <body>
-    <h2>Select a CSV file to visualize:</h2>
+    <h2>CSV Relational Database Demo</h2>
     <div class="content">
       <input type="file" id="csv-file" accept=".csv" />
-      <div id="csv-container"></div>
+      <div class="data-info" id="data-info"></div>
+
+      <div class="filter-container">
+        <h3>Filter Data</h3>
+        <div class="filter-row">
+          <select id="column-selector">
+            <option value="">Select a column to filter...</option>
+          </select>
+          <select id="value-selector">
+            <option value="">Select a value...</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="tables-container">
+        <div class="table-wrapper">
+          <div class="table-title">Main Table (Normalized)</div>
+          <div id="main-table-container"></div>
+        </div>
+        <div id="value-tables-container"></div>
+      </div>
+
+      <div class="ranges-container">
+        <div class="ranges-header">Ranges Table</div>
+        <div id="range-tables-container"></div>
+      </div>
+
+      <div id="filtered-results-container"></div>
     </div>
+
+    <script>
+      const db = new CSVRelationalDB();
+      const fileInput = document.getElementById("csv-file");
+      const mainTableContainer = document.getElementById(
+        "main-table-container"
+      );
+      const valueTablesContainer = document.getElementById(
+        "value-tables-container"
+      );
+      const rangeTablesContainer = document.getElementById(
+        "range-tables-container"
+      );
+      const columnSelector = document.getElementById("column-selector");
+      const valueSelector = document.getElementById("value-selector");
+      const filteredResultsContainer = document.getElementById(
+        "filtered-results-container"
+      );
+      const dataInfo = document.getElementById("data-info");
+
+      fileInput.addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            const csvContent = e.target.result;
+            const tableName = file.name.replace(".csv", "");
+
+            try {
+              await db.loadTable(tableName, csvContent);
+
+              // Display tables
+              displayMainTable(tableName);
+              displayValueTables(tableName);
+              displayRangeTables(tableName);
+              populateColumnSelector(tableName);
+              updateDataInfo(tableName);
+            } catch (error) {
+              console.error("Error loading CSV:", error);
+            }
+          };
+          reader.readAsText(file);
+        }
+      });
+
+      columnSelector.addEventListener("change", (event) => {
+        const selectedColumn = event.target.value;
+        const tableName = fileInput.files[0]?.name.replace(".csv", "");
+        if (tableName && selectedColumn) {
+          populateValueSelector(tableName, selectedColumn);
+        }
+      });
+
+      valueSelector.addEventListener("change", (event) => {
+        const selectedColumn = columnSelector.value;
+        const selectedValue = event.target.value;
+        const tableName = fileInput.files[0]?.name.replace(".csv", "");
+        if (tableName && selectedColumn && selectedValue) {
+          displayFilteredResults(tableName, selectedColumn, selectedValue);
+        }
+      });
+
+      function updateDataInfo(tableName) {
+        const mainTable = db.tables.get(tableName);
+        if (!mainTable) return;
+
+        const valuesTable = db.tables.get("unified_values");
+        const rangesTable = db.tables.get("unified_ranges");
+        const formulasTable = db.tables.get("unified_formulas");
+
+        let infoHtml = `
+          <p>Data Structure:</p>
+          <ul>
+            <li>Main table has ${mainTable.rows.length} rows</li>
+            <li>Unified Values table has ${
+              valuesTable ? valuesTable.rows.length : 0
+            } rows</li>
+            <li>Unified Formulas table has ${
+              formulasTable ? formulasTable.rows.length : 0
+            } rows</li>
+            <li>Unified Ranges table has ${
+              rangesTable ? rangesTable.rows.length : 0
+            } rows</li>
+          </ul>
+        `;
+
+        dataInfo.innerHTML = infoHtml;
+      }
+
+      function displayMainTable(tableName) {
+        const table = db.tables.get(tableName);
+        if (!table) return;
+
+        const tableElement = createTableElement(table.headers, table.rows);
+        mainTableContainer.innerHTML = "";
+        mainTableContainer.appendChild(tableElement);
+      }
+
+      function displayValueTables(tableName) {
+        valueTablesContainer.innerHTML = "";
+
+        // Get the unified tables
+        const valuesTable = db.tables.get("unified_values");
+        const rangesTable = db.tables.get("unified_ranges");
+        const formulasTable = db.tables.get("unified_formulas");
+
+        if (!valuesTable) return;
+
+        // Create a wrapper for the unified tables
+        const wrapper = document.createElement("div");
+        wrapper.className = "table-wrapper";
+
+        // Display Values Table
+        wrapper.innerHTML = `
+          <div class="table-title">
+            Unified Values Table
+            <span class="value-count">(${valuesTable.rows.length} total values)</span>
+          </div>
+        `;
+
+        const valuesTableElement = createTableElement(
+          valuesTable.headers,
+          valuesTable.rows
+        );
+        wrapper.appendChild(valuesTableElement);
+
+        // Display Formulas Table
+        if (formulasTable && formulasTable.rows.length > 0) {
+          const formulasWrapper = document.createElement("div");
+          formulasWrapper.className = "table-wrapper";
+          formulasWrapper.innerHTML = `
+            <div class="table-title">
+              Unified Formulas Table
+              <span class="value-count">(${formulasTable.rows.length} total formulas)</span>
+            </div>
+          `;
+
+          const formulasTableElement = createTableElement(
+            formulasTable.headers,
+            formulasTable.rows
+          );
+          formulasWrapper.appendChild(formulasTableElement);
+          wrapper.appendChild(formulasWrapper);
+        }
+
+        // Display Ranges Table
+        if (rangesTable && rangesTable.rows.length > 0) {
+          const rangesWrapper = document.createElement("div");
+          rangesWrapper.className = "table-wrapper";
+          rangesWrapper.innerHTML = `
+            <div class="table-title">
+              Unified Ranges Table
+              <span class="value-count">(${rangesTable.rows.length} total ranges)</span>
+            </div>
+          `;
+
+          const rangesTableElement = createTableElement(
+            rangesTable.headers,
+            rangesTable.rows
+          );
+          rangesWrapper.appendChild(rangesTableElement);
+          wrapper.appendChild(rangesWrapper);
+        }
+
+        valueTablesContainer.appendChild(wrapper);
+      }
+
+      function displayRangeTables(tableName) {
+        rangeTablesContainer.innerHTML = "";
+
+        // Get the unified ranges table
+        const rangesTable = db.tables.get("unified_ranges");
+        if (!rangesTable || rangesTable.rows.length === 0) {
+          rangeTablesContainer.innerHTML =
+            "<p>No ranges found in the data.</p>";
+          return;
+        }
+
+        // Group ranges by table_name and column_name
+        const groupedRanges = {};
+        rangesTable.rows.forEach((row) => {
+          const key = `${row.table_name}.${row.column_name}`;
+          if (!groupedRanges[key]) {
+            groupedRanges[key] = [];
+          }
+          groupedRanges[key].push(row);
+        });
+
+        // Display each group of ranges
+        Object.entries(groupedRanges).forEach(([key, ranges]) => {
+          const [tableName, columnName] = key.split(".");
+
+          // Create range group container
+          const groupContainer = document.createElement("div");
+          groupContainer.className = "range-group";
+
+          // Add title with count
+          const title = document.createElement("div");
+          title.className = "range-group-title";
+          title.innerHTML = `
+                <span>${columnName}</span>
+                <span class="value-count">${ranges.length} ranges</span>
+            `;
+          groupContainer.appendChild(title);
+
+          // Create table
+          const table = document.createElement("table");
+          table.className = "range-table";
+
+          // Add headers
+          const thead = document.createElement("thead");
+          thead.innerHTML = `
+                <tr>
+                    <th>Range</th>
+                    <th>Price</th>
+                </tr>
+            `;
+          table.appendChild(thead);
+
+          // Add rows
+          const tbody = document.createElement("tbody");
+          ranges.forEach((range) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                    <td>
+                        <div class="range-info">
+                            <span class="range-value">$${range.low} - $${range.high}</span>
+                        </div>
+                    </td>
+                    <td class="range-price">$${range.price}</td>
+                `;
+            tbody.appendChild(tr);
+          });
+          table.appendChild(tbody);
+
+          groupContainer.appendChild(table);
+          rangeTablesContainer.appendChild(groupContainer);
+        });
+      }
+
+      function populateColumnSelector(tableName) {
+        columnSelector.innerHTML =
+          '<option value="">Select a column to filter...</option>';
+        valueSelector.innerHTML = '<option value="">Select a value...</option>';
+
+        const mainTable = db.tables.get(tableName);
+        if (!mainTable) return;
+
+        // Get all columns that have value tables
+        for (const [key, relationship] of db.relationships.entries()) {
+          if (key.startsWith(`${tableName}.`)) {
+            const column = relationship.originalColumn;
+            const option = document.createElement("option");
+            option.value = column;
+            option.textContent = column;
+            columnSelector.appendChild(option);
+          }
+        }
+      }
+
+      function populateValueSelector(tableName, column) {
+        valueSelector.innerHTML = '<option value="">Select a value...</option>';
+
+        const valuesTable = db.tables.get(
+          `${tableName}_${column.toLowerCase()}_values`
+        );
+        if (!valuesTable) return;
+
+        valuesTable.rows.forEach((row) => {
+          const option = document.createElement("option");
+          option.value = row.value;
+          option.textContent = row.value;
+          valueSelector.appendChild(option);
+        });
+      }
+
+      function displayFilteredResults(tableName, column, value) {
+        const filteredRows = db.getRowsByValue(tableName, column, value);
+        const mainTable = db.tables.get(tableName);
+
+        if (filteredRows.length) {
+          const tableElement = createTableElement(
+            Object.keys(filteredRows[0]),
+            filteredRows
+          );
+          filteredResultsContainer.innerHTML = `
+            <h3>Filtered Results (${column} = ${value}):</h3>
+            <p>Found ${filteredRows.length} matching rows</p>
+          `;
+          filteredResultsContainer.appendChild(tableElement);
+        } else {
+          filteredResultsContainer.innerHTML =
+            "<p>No results found for this filter.</p>";
+        }
+      }
+
+      function createTableElement(headers, rows) {
+        const tableElement = document.createElement("table");
+
+        // Create header
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+        headers.forEach((header) => {
+          const th = document.createElement("th");
+          th.textContent = header;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        tableElement.appendChild(thead);
+
+        // Create body
+        const tbody = document.createElement("tbody");
+        rows.forEach((row) => {
+          const tr = document.createElement("tr");
+          headers.forEach((header) => {
+            const td = document.createElement("td");
+            td.textContent = row[header] || "";
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        tableElement.appendChild(tbody);
+
+        return tableElement;
+      }
+    </script>
   </body>
 </html>
